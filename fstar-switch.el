@@ -1,5 +1,3 @@
-;;; TODO
-;;; Check directories so you don't get bad includes.
 
 ;; Note we supress bad include directories with warn_error -152 which gives a fatal
 ;; error from the command line but seems to work in the language server.
