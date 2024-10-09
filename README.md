@@ -24,4 +24,6 @@ An extension to Fstar Mode in Emacs that allows switching between F* installatio
  M-x compile will now recogize and count errors/warnings/infos and jump to many
   but not all file references.
 
-
+## Common Issues
+ If you get an 'a is not equal to the expected type b' you have not bootstrapped your FStar clone.
+ cd <whereever> FStar; make -j20 bootstrap.
