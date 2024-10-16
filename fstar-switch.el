@@ -1,6 +1,6 @@
-
 ;; Note we supress bad include directories with warn_error -152 which gives a fatal
 ;; error from the command line but seems to work in the language server.
+;;
 
 (require 'fstar-mode)
 
@@ -8,8 +8,9 @@
   "Set the basic arguments for fstar-mode to run an fstar, internal."
    (message "fstar-switch: setting up F* emacs mode for a local installation in %s\n"
             path)
-   (setq-default fstar-home (concat path "FStar"))
-   (setq-default fstar-executable (concat path "FStar/bin/fstar.exe"))
+   (setq path (file-name-as-directory path))
+   (setq-default fstar-home path)
+   (setq-default fstar-executable (concat path "bin/fstar.exe"))
    (setq-default fstar-subp-prover-args '(
      "--include" ".."
      "--include" "../.."
@@ -24,7 +25,8 @@
 (defun fstar-setup-opam (path)
    (message "fstar-switch: setting up F* emacs mode for an opam installation in %s\n"
             path)
-   (setq-default fstar-home       (concat path "/.opam/default/lib/fstar/"))
+   (setq path (file-name-as-directory path))
+   (setq-default fstar-home       (concat path ".opam/default/lib/fstar/"))
    (setq-default fstar-executable (concat home "/.opam/default/bin/fstar.exe"))
    (setq-default fstar-subp-prover-args '(
      "--include" ".."
@@ -42,8 +44,9 @@
    (message 
      "fstar-switch: setting up F* emacs mode for a system (internal) installation in %s\n"
             path)
-   (setq-default fstar-home       (concat path "FStar"))
-   (setq-default fstar-executable (concat path "FStar/bin/fstar.exe"))
+   (setq path (file-name-as-directory path))
+   (setq-default fstar-home       path)
+   (setq-default fstar-executable (concat path "bin/fstar.exe"))
 ;; As per tracing make boot
    (setq-default fstar-subp-prover-args
     (list
@@ -57,21 +60,21 @@
       "--cache_checked_modules"
 ;;; This is a key difference.
       "--MLish" 
-      "--include" (concat path "FStar/src/basic")
-      "--include" (concat path "FStar/src/class")
-      "--include" (concat path "FStar/src/data")
-      "--include" (concat path "FStar/src/extraction")
-      "--include" (concat path "FStar/src/fstar")
-      "--include" (concat path "FStar/src/parser")
-      "--include" (concat path "FStar/src/prettyprint")
-      "--include" (concat path "FStar/src/reflection")
-      "--include" (concat path "FStar/src/smtencoding")
-      "--include" (concat path "FStar/src/syntax")
-      "--include" (concat path "FStar/src/syntax/print")
-      "--include" (concat path "FStar/src/tactics")
-      "--include" (concat path "FStar/src/tosyntax")
-      "--include" (concat path "FStar/src/typechecker")
-      "--include" (concat path "FStar/src/tests")))
+      "--include" (concat path "src/basic")
+      "--include" (concat path "src/class")
+      "--include" (concat path "src/data")
+      "--include" (concat path "src/extraction")
+      "--include" (concat path "src/fstar")
+      "--include" (concat path "src/parser")
+      "--include" (concat path "src/prettyprint")
+      "--include" (concat path "src/reflection")
+      "--include" (concat path "src/smtencoding")
+      "--include" (concat path "src/syntax")
+      "--include" (concat path "src/syntax/print")
+      "--include" (concat path "src/tactics")
+      "--include" (concat path "src/tosyntax")
+      "--include" (concat path "src/typechecker")
+      "--include" (concat path "src/tests")))
    (fstar-subp-kill-all))
 
 (defun fstar-switch (installation-type installation-path)
@@ -84,7 +87,7 @@
  (interactive
    (list
     (read-string         "installation-type: " "opam")
-    (read-directory-name "installation-path (without ~, path to above FStar): ")))
+    (read-directory-name "installation-path (without ~, path to FStar directory): ")))
 
    (message "installation-type is %s" installation-type) 
    (message "installation-path is %s" installation-path)
@@ -268,3 +271,12 @@
 
 (add-hook 'compilation-mode-hook 'setup-fstar-compile)
 
+
+;;;  Colorize the compile buffer.
+
+(ignore-errors
+  (require 'ansi-color)
+  (defun my-colorize-compilation-buffer ()
+    (when (eq major-mode 'compilation-mode)
+      (ansi-color-apply-on-region compilation-filter-start (point-max))))
+  (add-hook 'compilation-filter-hook 'my-colorize-compilation-buffer))
