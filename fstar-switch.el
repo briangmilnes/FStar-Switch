@@ -50,16 +50,20 @@
 ;; As per tracing make boot
    (setq-default fstar-subp-prover-args
     (list
-;;;   "--include" (concat path "FStar/ulib")
-      "--use_hints" 
-      "--silent" 
-      "--lax"
-      "--no_location_info"
-      "--warn_error" "-271-272-241-319-274-152"
-      "--cache_dir" (concat path "FStar/src/.cache.boot")
-      "--cache_checked_modules"
+;; See FStarCompiler.fst.config.json 
+;;      "--use_hints" 
+;;      "--silent" 
+;;      "--cache_checked_modules"
 ;;; This is a key difference.
       "--MLish" 
+      "--MLish_effect" "FStarC.Compiler.Effect"
+      "--lax"
+      "--cache_dir" ".cache.boot"
+      "--no_location_info"
+      "--warn_error" "-271-272-241-319-274-152"
+
+;; You don't get ulib in the compiler.
+;;      "--include" (concat path "ulib")
       "--include" (concat path "src/basic")
       "--include" (concat path "src/class")
       "--include" (concat path "src/data")
@@ -89,7 +93,7 @@
     (read-string         "installation-type: " "opam")
     (read-directory-name "installation-path (without ~, path to FStar directory): ")))
 
-   (message "installation-type is %s" installation-type) 
+   (message "installation-type is %s" installation-type)
    (message "installation-path is %s" installation-path)
   (let* ((home (getenv "HOME")))
    (message "fstar-switch: Setting fstar-switch to %s using directory %s\n" 
