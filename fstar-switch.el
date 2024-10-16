@@ -263,6 +263,18 @@
   2  ;; error
   ))
 
+;; Amazing this does not work by default. Patched in 2019.
+(setq gmake-error-regexp ": \\*\\*\\* \\[\\(\\(.+?\\):\\([0-9]+\\): .+\\)\\]")
+
+(add-to-list 'compilation-error-regexp-alist-alist
+`(fstar-final-gmake-error
+  ,gmake-error-regexp
+  2  ;; file 
+  3  ;; line
+  () ;; column
+  2  ;; error
+  ))
+
 (add-to-list 'compilation-error-regexp-alist 'fstar-error)
 (add-to-list 'compilation-error-regexp-alist 'fstar-warning)
 (add-to-list 'compilation-error-regexp-alist 'fstar-final-success)
@@ -271,11 +283,11 @@
 (add-to-list 'compilation-error-regexp-alist 'fstar-final-starting-test-suite)
 (add-to-list 'compilation-error-regexp-alist 'fstar-final-file-failure)
 (add-to-list 'compilation-error-regexp-alist 'fstar-final-unknown-exception-error)
+(add-to-list 'compilation-error-regexp-alist 'fstar-final-gmake-error)
 )
 
 (add-hook 'compilation-mode-hook 'setup-fstar-compile)
-
-
+              
 ;;;  Colorize the compile buffer.
 
 (ignore-errors
